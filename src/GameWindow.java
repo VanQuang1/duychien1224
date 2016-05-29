@@ -1,9 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +9,9 @@ import java.io.IOException;
  * Created by admin on 5/28/2016.
  */
 public class GameWindow extends Frame implements Runnable{
-    Image background,plane1,bufferedImage;
-    int planeX=100,planeY=100,speedX=0,speedY=0;
-
+    Image background,plane1,bufferedImage,plane2;
+    int planeX1=100,planeY1=500,speedX1=0,speedY1=0;
+    int planeX2=300,planeY2=500;
     public GameWindow() throws HeadlessException {
         this.setTitle("1945");
         this.setSize(480, 600);
@@ -65,26 +62,40 @@ public class GameWindow extends Frame implements Runnable{
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_W:
-                        speedY -=3;break;
+                        speedY1 -=3;break;
                     case KeyEvent.VK_A:
-                        speedX -=3;break;
+                        speedX1 -=3;break;
                     case KeyEvent.VK_D:
-                        speedX+=3;break;
+                        speedX1+=3;break;
                     case KeyEvent.VK_S:
-                        speedY+=3;break;
+                        speedY1+=3;break;
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                speedX=0;
-                speedY=0;
+                speedX1=0;
+                speedY1=0;
 
+            }
+        });
+        this.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.println("moved at:" + e.getX() +" "+ e.getY());
+                planeX2 = e.getX();
+                planeY2 = e.getY();
             }
         });
         try {
             background = ImageIO.read(new File("Resources/Background.png"));
-            plane1 = ImageIO.read(new File("Resources/PLANE1.png"));
+            plane1 = ImageIO.read(new File("Resources/PLANE2.png"));
+            plane2 = ImageIO.read(new File("Resources/PLANE3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -99,7 +110,8 @@ public class GameWindow extends Frame implements Runnable{
         }
         Graphics bufferedGraphics =bufferedImage.getGraphics();
         bufferedGraphics.drawImage(background,0,0,null);
-        bufferedGraphics.drawImage(plane1,planeX,planeY,null);
+        bufferedGraphics.drawImage(plane1,planeX1,planeY1,null);
+        bufferedGraphics.drawImage(plane2,planeX2,planeY2,null);
         g.drawImage(bufferedImage,0,0,null);
 
     }
@@ -108,8 +120,8 @@ public class GameWindow extends Frame implements Runnable{
         long i=0;
         while(true){
             try {
-                planeX+=speedX;
-                planeY+=speedY;
+                planeX1+=speedX1;
+                planeY1+=speedY1;
                 Thread.sleep(17);
                 repaint();
             } catch (InterruptedException e) {
